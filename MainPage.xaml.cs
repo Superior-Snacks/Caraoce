@@ -18,6 +18,7 @@ namespace Caraoce
             // CHANGED: No 'await', and removed 'Async' from the name
             var player = AudioManager.Current.CreatePlayer(audioStream);
             PlayButton.Text = "Playing...";
+            //working?
             player.Play();
         }
     }
