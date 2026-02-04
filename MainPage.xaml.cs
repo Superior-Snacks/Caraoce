@@ -1,78 +1,100 @@
 ﻿using Plugin.Maui.Audio;
-using System.IO;
+using System.Linq;
 
-namespace Caraoce
+namespace Caraoce;
+
+public partial class MainPage : ContentPage
 {
-    public partial class MainPage : ContentPage
+    private IAudioPlayer player;
+    private bool isPlaying = false;
+    private List<LyricLine> lyrics;
+
+    public MainPage()
     {
-        int count = 0;
+        InitializeComponent();
 
-        public MainPage()
+        // Define lyrics immediately
+        lyrics = new List<LyricLine>
         {
-            InitializeComponent();
-        }
-        private async void OnPlayClicked(object sender, EventArgs e)
-        {
-            Console.WriteLine("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-            // 1. Setup the Lyrics (Mock Data)
-            // We create a list of lyrics with timestamps (0s, 2s, 4s...)
-            var lyrics = new List<LyricLine>
+            new LyricLine(0, "Get Ready... 🎤"),
+            new LyricLine(2, "This is the horizontal view!"),
+            new LyricLine(5, "Lines slide into place..."),
+            new LyricLine(8, "Sing it loud and clear!"),
+            new LyricLine(12, "Karaoke master!")
+        };
+
+        // Feed the data to the Carousel
+        LyricsCarousel.ItemsSource = lyrics;
+    }
+
+    // This method runs automatically when the page appears on screen
+    protected override async void OnAppearing()
     {
-        new LyricLine(0, "Music starts... 🎵"),
-        new LyricLine(2, "This is the first line"),
-        new LyricLine(5, "Here comes the second line"),
-        new LyricLine(8, "And now we are singing!"),
-        new LyricLine(12, "Karaoke is fun!")
-    };
-            Console.WriteLine("lyrics setup");
+        base.OnAppearing();
+        await StartKaraoke();
+    }
 
-            // 2. Prepare the Audio
-            var audioStream = await FileSystem.OpenAppPackageFileAsync("testSound3.mp3");
-            var player = AudioManager.Current.CreatePlayer(audioStream);
+    // This runs when you leave the page (hits back button)
+    protected override void OnDisappearing()
+    {
+        base.OnDisappearing();
+        StopKaraoke();
+    }
 
-            Console.WriteLine("audio prepped");
+    private async Task StartKaraoke()
+    {
+        StatusLabel.Text = "Loading Audio...";
 
-            // 3. Start Playing
-            player.Play();
-            PlayButton.Text = "Playing...";
+        var audioStream = await FileSystem.OpenAppPackageFileAsync("mysong.mp3");
+        player = AudioManager.Current.CreatePlayer(audioStream);
 
-            Console.WriteLine("Play started");
+        player.Play();
+        isPlaying = true;
+        StatusLabel.Text = "Now Playing 🎵";
 
-            // 4. The Sync Loop 🔄
-            // This loop runs continuously while the player is playing
-            while (player.IsPlaying)
+        // The Sync Loop
+        while (isPlaying && player.IsPlaying)
+        {
+            double currentPosition = player.CurrentPosition;
+
+            // Find the index of the current line
+            var currentLine = lyrics.LastOrDefault(l => l.TimeSeconds <= currentPosition);
+
+            if (currentLine != null)
             {
-                Console.WriteLine("loop start");
-                // Get the current position of the song in seconds
-                double currentPosition = player.CurrentPosition;
-
-                // Find the last lyric that has "passed" the current time
-                // .LastOrDefault() finds the most recent line we should have shown
-                var currentLine = lyrics.LastOrDefault(l => l.TimeSeconds <= currentPosition);
-
-                if (currentLine != null)
-                {
-                    // Update the screen!
-                    LyricsLabel.Text = currentLine.Text;
-                }
-
-                // Wait a tiny bit (100ms) so we don't freeze the phone
-                await Task.Delay(100);
+                // Scroll the carousel to this line automatically!
+                LyricsCarousel.Position = lyrics.IndexOf(currentLine);
             }
 
-            PlayButton.Text = "Play Song";
-            LyricsLabel.Text = "Song Finished!";
+            await Task.Delay(100);
         }
     }
-    public class LyricLine
-    {
-        public double TimeSeconds { get; set; }
-        public string Text { get; set; }
 
-        public LyricLine(double time, string text)
+    private void StopKaraoke()
+    {
+        isPlaying = false;
+        if (player != null)
         {
-            TimeSeconds = time;
-            Text = text;
+            player.Dispose(); // Kills the audio so it doesn't play in the background
         }
+    }
+
+    private void OnStopClicked(object sender, EventArgs e)
+    {
+        // Pop this page off the stack (go back to menu)
+        Navigation.PopAsync();
+    }
+}
+
+// Keep your class definition at the bottom
+public class LyricLine
+{
+    public double TimeSeconds { get; set; }
+    public string Text { get; set; }
+
+    public LyricLine(double time, string text)
+    {
+        TimeSeconds = time;
+        Text = text;
     }
 }

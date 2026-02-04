@@ -1,25 +1,47 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="Caraoce.MainPage">
+             x:Class="Caraoce.MainPage"
+             BackgroundColor="#1a1a2e"
+             Title="Now Playing">
 
-    <ScrollView>
-        <VerticalStackLayout
-            Padding="30,0"
-            Spacing="25">
+    <Grid RowDefinitions="*, Auto" Padding="20">
 
-            <Label x:Name="LyricsLabel"
-        Text="Ready to sing!" 
-        FontSize="Large" 
-        HorizontalOptions="Center" />
+        <CarouselView x:Name="LyricsCarousel"
+                      Grid.Row="0"
+                      IndicatorView="indicatorView"
+                      VerticalOptions="Center">
+            <CarouselView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Padding="10">
+                        <Label Text="{Binding Text}"
+                               FontSize="40"
+                               FontAttributes="Bold"
+                               TextColor="White"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center"
+                               HorizontalTextAlignment="Center" />
+                    </Grid>
+                </DataTemplate>
+            </CarouselView.ItemTemplate>
+        </CarouselView>
 
-        <Button x:Name="PlayButton" 
-        Text="Play Song" 
-        Clicked="OnPlayClicked" />
+        <VerticalStackLayout Grid.Row="1" Spacing="20" Margin="0,0,0,30">
+            <IndicatorView x:Name="indicatorView"
+                           IndicatorColor="Gray"
+                           SelectedIndicatorColor="#e94560"
+                           HorizontalOptions="Center" />
 
-        <Button x:Name="RecordButton" 
-        Text="Record" />
+            <Label x:Name="StatusLabel" 
+                   Text="Loading..." 
+                   TextColor="Gray" 
+                   HorizontalOptions="Center"/>
+
+            <Button Text="STOP &amp; BACK"
+                    BackgroundColor="#e94560"
+                    TextColor="White"
+                    CornerRadius="20"
+                    Clicked="OnStopClicked"/>
         </VerticalStackLayout>
-    </ScrollView>
-
+    </Grid>
 </ContentPage>
