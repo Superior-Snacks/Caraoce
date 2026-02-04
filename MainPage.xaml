@@ -8,11 +8,7 @@
             Padding="30,0"
             Spacing="25">
 
-        <Label Text="Ready to sing!" 
-        FontSize="Large" 
-        HorizontalOptions="Center" />
-
-        <Label x:Name="LyricsLabel"
+            <Label x:Name="LyricsLabel"
         Text="Ready to sing!" 
         FontSize="Large" 
         HorizontalOptions="Center" />

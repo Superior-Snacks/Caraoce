@@ -13,6 +13,7 @@ namespace Caraoce
         }
         private async void OnPlayClicked(object sender, EventArgs e)
         {
+            Console.WriteLine("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             // 1. Setup the Lyrics (Mock Data)
             // We create a list of lyrics with timestamps (0s, 2s, 4s...)
             var lyrics = new List<LyricLine>
@@ -23,19 +24,25 @@ namespace Caraoce
         new LyricLine(8, "And now we are singing!"),
         new LyricLine(12, "Karaoke is fun!")
     };
+            Console.WriteLine("lyrics setup");
 
             // 2. Prepare the Audio
-            var audioStream = await FileSystem.OpenAppPackageFileAsync("mysong.mp3");
+            var audioStream = await FileSystem.OpenAppPackageFileAsync("testSound1.mp3");
             var player = AudioManager.Current.CreatePlayer(audioStream);
+
+            Console.WriteLine("audio prepped");
 
             // 3. Start Playing
             player.Play();
             PlayButton.Text = "Playing...";
 
+            Console.WriteLine("Play started");
+
             // 4. The Sync Loop 🔄
             // This loop runs continuously while the player is playing
             while (player.IsPlaying)
             {
+                Console.WriteLine("loop start");
                 // Get the current position of the song in seconds
                 double currentPosition = player.CurrentPosition;
 
