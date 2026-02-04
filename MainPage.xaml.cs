@@ -27,7 +27,7 @@ namespace Caraoce
             Console.WriteLine("lyrics setup");
 
             // 2. Prepare the Audio
-            var audioStream = await FileSystem.OpenAppPackageFileAsync("testSound1.mp3");
+            var audioStream = await FileSystem.OpenAppPackageFileAsync("testSound3.mp3");
             var player = AudioManager.Current.CreatePlayer(audioStream);
 
             Console.WriteLine("audio prepped");
