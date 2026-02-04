@@ -13,7 +13,7 @@ namespace Caraoce
         }
         private async void OnPlayClicked(object sender, EventArgs e)
         {
-            var audioStream = await FileSystem.OpenAppPackageFileAsync("mysong.mp3");
+            var audioStream = await FileSystem.OpenAppPackageFileAsync("testSound1.mp3");
 
             // CHANGED: No 'await', and removed 'Async' from the name
             var player = AudioManager.Current.CreatePlayer(audioStream);
