@@ -2,11 +2,51 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Caraoce.StartPage"
-             Title="StartPage">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+             Title="Home"
+             BackgroundColor="#1a1a2e">
+    <Grid RowDefinitions="*,Auto,Auto,*" Padding="30">
+
+        <VerticalStackLayout Grid.Row="0" VerticalOptions="Center">
+            <Label Text="KARAOKE" 
+                   TextColor="#e94560" 
+                   FontSize="60" 
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center" />
+            <Label Text="STAR" 
+                   TextColor="White" 
+                   FontSize="40" 
+                   LetterSpacing="5"
+                   HorizontalOptions="Center" />
+        </VerticalStackLayout>
+
+        <Border Grid.Row="1" StrokeShape="RoundRectangle 25" BackgroundColor="White" Margin="0,20">
+            <Entry Placeholder="Search for a song..."
+                   TextColor="Black"
+                   PlaceholderColor="Gray"
+                   HeightRequest="50"
+                   HorizontalTextAlignment="Center" />
+        </Border>
+
+        <VerticalStackLayout Grid.Row="2" Spacing="20" Margin="0,20">
+            <Button Text="🔀 SHUFFLE PLAY"
+                    BackgroundColor="#e94560"
+                    TextColor="White"
+                    FontSize="20"
+                    FontAttributes="Bold"
+                    CornerRadius="25"
+                    HeightRequest="60"
+                    Clicked="OnShuffleClicked"/>
+
+            <Button Text="📂 SELECT SONG"
+                    BackgroundColor="#16213e"
+                    TextColor="White"
+                    FontSize="18"
+                    CornerRadius="25"
+                    HeightRequest="60"
+                    BorderColor="#0f3460"
+                    BorderWidth="2"
+                    Clicked="OnSelectClicked"/>
+        </VerticalStackLayout>
+
+    </Grid>
 </ContentPage>
