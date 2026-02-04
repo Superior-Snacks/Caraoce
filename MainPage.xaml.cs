@@ -20,7 +20,7 @@ namespace Caraoce
             PlayButton.Text = "Playing...";
             //working?
             player.Play();
-            PlayButton.Text = "Play Song";
+            //PlayButton.Text = "Play Song";
 
         }
     }

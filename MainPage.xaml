@@ -12,6 +12,11 @@
         FontSize="Large" 
         HorizontalOptions="Center" />
 
+        <Label x:Name="LyricsLabel"
+        Text="Ready to sing!" 
+        FontSize="Large" 
+        HorizontalOptions="Center" />
+
         <Button x:Name="PlayButton" 
         Text="Play Song" 
         Clicked="OnPlayClicked" />
