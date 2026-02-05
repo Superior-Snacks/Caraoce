@@ -1,0 +1,23 @@
+[
+  {
+    "Title": "My Test Song",
+    "Artist": "Me",
+    "AudioFilename": "testSound1.mp3",
+    "LrcFilename": "testSound1.lrc",
+    "CoverImage": "music_note.png"
+  },
+  {
+    "Title": "Bohemian Rhapsody (Demo)",
+    "Artist": "Queen",
+    "AudioFilename": "testSound2.mp3",
+    "LrcFilename": "testSound2.lrc",
+    "CoverImage": "queen_cover.png"
+  },
+  {
+    "Title": "Bohemian Rhapsody (Demo)",
+    "Artist": "Queen",
+    "AudioFilename": "testSound3.mp3",
+    "LrcFilename": "testSound3.lrc",
+    "CoverImage": "queen_cover.png"
+  }
+]
