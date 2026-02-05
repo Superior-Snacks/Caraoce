@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Caraoce.SongListPage"
+             BackgroundColor="#1a1a2e"
+             Title="Select a Song">
+
+    <Grid RowDefinitions="Auto, *">
+        <SearchBar Grid.Row="0"
+                   Placeholder="Search Library..."
+                   BackgroundColor="White"
+                   TextColor="Black"
+                   PlaceholderColor="Gray"
+                   CancelButtonColor="#e94560"
+                   TextChanged="OnSearchBarTextChanged" />
+
+        <CollectionView x:Name="SongsCollection"
+                        Grid.Row="1"
+                        SelectionMode="Single"
+                        SelectionChanged="OnSongSelected">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Border Stroke="Transparent" BackgroundColor="#16213e" Margin="5" Padding="10">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="10"/>
+                        </Border.StrokeShape>
+
+                        <Grid ColumnDefinitions="50, *">
+                            <Image Grid.Column="0" Source="dotnet_bot.png" HeightRequest="40" />
+
+                            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Padding="10,0">
+                                <Label Text="{Binding Title}" TextColor="White" FontSize="18" FontAttributes="Bold"/>
+                                <Label Text="{Binding Artist}" TextColor="#e94560" FontSize="14"/>
+                            </VerticalStackLayout>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+</ContentPage>
