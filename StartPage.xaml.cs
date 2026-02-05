@@ -20,3 +20,12 @@ public partial class StartPage : ContentPage
         DisplayAlertAsync("Selection", "Song list coming soon!", "OK");
     }
 }
+
+public class KaraokeSong
+{
+    public string Title { get; set; }
+    public string Artist { get; set; }
+    public string AudioFilename { get; set; } // e.g., "mysong.mp3"
+    public string LrcFilename { get; set; }   // e.g., "mysong.lrc"
+    public string CoverImage { get; set; }    // Optional: for album art later
+}

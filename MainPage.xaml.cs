@@ -9,9 +9,12 @@ public partial class MainPage : ContentPage
     private bool isPlaying = false;
     private List<LyricLine> lyrics;
 
+    private KaraokeSong currentSong;
+
     public MainPage()
     {
         InitializeComponent();
+        currentSong = songToPlay;
 
         // Define lyrics immediately
         lyrics = new List<LyricLine>
@@ -48,7 +51,7 @@ public partial class MainPage : ContentPage
         try
         {
             // 1. Open the .lrc file
-            using var stream = await FileSystem.OpenAppPackageFileAsync("mysong.lrc");
+            using var stream = await FileSystem.OpenAppPackageFileAsync(currentSong.LrcFilename); 
             using var reader = new StreamReader(stream);
             var fileContent = await reader.ReadToEndAsync();
 
@@ -65,7 +68,7 @@ public partial class MainPage : ContentPage
             return;
         }
 
-        var audioStream = await FileSystem.OpenAppPackageFileAsync("testSound3.mp3");
+        var audioStream = await FileSystem.OpenAppPackageFileAsync(currentSong.AudioFilename); 
         player = AudioManager.Current.CreatePlayer(audioStream);
 
         player.Play();
