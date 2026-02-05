@@ -10,17 +10,7 @@ public partial class StartPage : ContentPage
     private void OnShuffleClicked(object sender, EventArgs e)
     {
         // 1. Define our Library (Eventually this will come from a database)
-        var songLibrary = new List<KaraokeSong>
-    {
-        new KaraokeSong
-        {
-            Title = "My Test Song",
-            Artist = "Me",
-            AudioFilename = "testSound3.mp3",
-            LrcFilename = "testSound3.lrc"
-        },
-        // You can add more songs here once you drag the files into Resources/Raw!
-    };
+        var songLibrary = SongRepository.GetAllSongs();
 
         // 2. Pick a random song
         var random = new Random();
