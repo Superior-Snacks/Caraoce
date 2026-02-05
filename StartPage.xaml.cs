@@ -32,8 +32,7 @@ public partial class StartPage : ContentPage
 
     private void OnSelectClicked(object sender, EventArgs e)
     {
-        // This will eventually go to a Song List page
-        DisplayAlertAsync("Selection", "Song list coming soon!", "OK");
+        Navigation.PushAsync(new SongListPage());
     }
 }
 
