@@ -11,23 +11,10 @@ public partial class MainPage : ContentPage
 
     private KaraokeSong currentSong;
 
-    public MainPage()
+    public MainPage(KaraokeSong songToPlay)
     {
         InitializeComponent();
         currentSong = songToPlay;
-
-        // Define lyrics immediately
-        lyrics = new List<LyricLine>
-        {
-            new LyricLine(0, "Get Ready... 🎤"),
-            new LyricLine(2, "This is the horizontal view!"),
-            new LyricLine(5, "Lines slide into place..."),
-            new LyricLine(8, "Sing it loud and clear!"),
-            new LyricLine(12, "Karaoke master!")
-        };
-
-        // Feed the data to the Carousel
-        LyricsCarousel.ItemsSource = lyrics;
     }
 
     // This method runs automatically when the page appears on screen

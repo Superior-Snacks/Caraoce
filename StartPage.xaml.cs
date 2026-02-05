@@ -16,8 +16,8 @@ public partial class StartPage : ContentPage
         {
             Title = "My Test Song",
             Artist = "Me",
-            AudioFilename = "mysong.mp3",
-            LrcFilename = "mysong.lrc"
+            AudioFilename = "testSound3.mp3",
+            LrcFilename = "testSound.lrc"
         },
         // You can add more songs here once you drag the files into Resources/Raw!
     };
