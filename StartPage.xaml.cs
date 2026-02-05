@@ -9,9 +9,25 @@ public partial class StartPage : ContentPage
 
     private void OnShuffleClicked(object sender, EventArgs e)
     {
-        // We will add logic here later to pick a random song
-        // For now, let's just push the Lyrics page to see it work
-        Navigation.PushAsync(new MainPage());
+        // 1. Define our Library (Eventually this will come from a database)
+        var songLibrary = new List<KaraokeSong>
+    {
+        new KaraokeSong
+        {
+            Title = "My Test Song",
+            Artist = "Me",
+            AudioFilename = "mysong.mp3",
+            LrcFilename = "mysong.lrc"
+        },
+        // You can add more songs here once you drag the files into Resources/Raw!
+    };
+
+        // 2. Pick a random song
+        var random = new Random();
+        var songToPlay = songLibrary[random.Next(songLibrary.Count)];
+
+        // 3. Navigate to the Player, PASSING the song!
+        Navigation.PushAsync(new MainPage(songToPlay));
     }
 
     private void OnSelectClicked(object sender, EventArgs e)
