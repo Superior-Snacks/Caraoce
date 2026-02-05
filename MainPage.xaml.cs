@@ -45,7 +45,7 @@ public partial class MainPage : ContentPage
     {
         StatusLabel.Text = "Loading Audio...";
 
-        var audioStream = await FileSystem.OpenAppPackageFileAsync("mysong.mp3");
+        var audioStream = await FileSystem.OpenAppPackageFileAsync("testSound3.mp3");
         player = AudioManager.Current.CreatePlayer(audioStream);
 
         player.Play();
