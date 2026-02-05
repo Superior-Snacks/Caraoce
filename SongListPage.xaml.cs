@@ -7,11 +7,12 @@ public partial class SongListPage : ContentPage
     public SongListPage()
     {
         InitializeComponent();
-
-        // 1. Get the data from our new Repository
-        allSongs = SongRepository.GetAllSongs();
-
-        // 2. Feed it to the list on screen
+        LoadSongs();
+    }
+    private async void LoadSongs()
+    {
+        // Wait for the file to be read
+        allSongs = await SongRepository.GetAllSongsAsync();
         SongsCollection.ItemsSource = allSongs;
     }
 
