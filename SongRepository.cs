@@ -15,16 +15,16 @@ public static class SongRepository
             {
                 Title = "My Test Song",
                 Artist = "Me",
-                AudioFilename = "mysong.mp3",
-                LrcFilename = "mysong.lrc",
+                AudioFilename = "testSound3.mp3",
+                LrcFilename = "testSound3.lrc",
                 CoverImage = "music_note.png" // We'll use a default icon for now
             },
             new KaraokeSong
             {
                 Title = "Another Hit",
                 Artist = "Famous Artist",
-                AudioFilename = "mysong.mp3", // Reusing files for testing
-                LrcFilename = "mysong.lrc"
+                AudioFilename = "testSound1.mp3", // Reusing files for testing
+                LrcFilename = "testSound1.lrc"
             }
         };
     }
