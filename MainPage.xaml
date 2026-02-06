@@ -5,7 +5,11 @@
              BackgroundColor="#1a1a2e"
              Title="Now Playing"
              NavigationPage.HasNavigationBar="False">
+
     <Grid RowDefinitions="*, Auto" Padding="20">
+        <Grid.GestureRecognizers>
+            <TapGestureRecognizer Tapped="OnScreenTapped" />
+        </Grid.GestureRecognizers>
 
         <CarouselView x:Name="LyricsCarousel"
                       Grid.Row="0"
@@ -27,13 +31,20 @@
             </CarouselView.ItemTemplate>
         </CarouselView>
 
-        <VerticalStackLayout Grid.Row="1" Spacing="10" Margin="10,0,10,20">
+        <VerticalStackLayout x:Name="ControlsPanel"
+                             Grid.Row="1" 
+                             Spacing="10" 
+                             Margin="10,0,10,20"
+                             Opacity="0"
+                             InputTransparent="True">
+
             <Label x:Name="StatusLabel"
-           Text="Loading..."
-           TextColor="White"
-           FontSize="20"
-           FontAttributes="Bold"
-           HorizontalOptions="Center" />
+                   Text="Loading..."
+                   TextColor="White"
+                   FontSize="20"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center" />
+
             <Grid ColumnDefinitions="Auto, *, Auto">
                 <Label x:Name="CurrentTimeLabel" Text="0:00" TextColor="Gray" VerticalOptions="Center"/>
                 <Slider x:Name="PositionSlider"
@@ -50,7 +61,6 @@
             </Grid>
 
             <HorizontalStackLayout Spacing="30" HorizontalOptions="Center">
-
                 <ImageButton Source="back_icon.png" 
                              HeightRequest="50" 
                              WidthRequest="50"
@@ -66,7 +76,6 @@
                         HeightRequest="80"
                         CornerRadius="40"
                         Clicked="OnPlayPauseClicked"/>
-
             </HorizontalStackLayout>
 
             <IndicatorView x:Name="indicatorView"
