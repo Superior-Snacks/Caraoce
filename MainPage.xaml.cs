@@ -83,6 +83,9 @@ public partial class MainPage : ContentPage
     private async Task StartKaraoke()
     {
         StatusLabel.Text = "Loading...";
+        lastInteractionTime = DateTime.Now;
+        ControlsPanel.Opacity = 1;
+        ControlsPanel.InputTransparent = false;
 
         // --- A. LOAD LYRICS ---
         try
@@ -197,6 +200,7 @@ public partial class MainPage : ContentPage
 
     private void OnPlayPauseClicked(object sender, EventArgs e)
     {
+        lastInteractionTime = DateTime.Now;
         if (player.IsPlaying)
         {
             player.Pause();
@@ -211,11 +215,13 @@ public partial class MainPage : ContentPage
 
     private void OnSliderDragStarted(object sender, EventArgs e)
     {
+        lastInteractionTime = DateTime.Now;
         isDraggingSlider = true;
     }
 
     private void OnSliderDragCompleted(object sender, EventArgs e)
     {
+        lastInteractionTime = DateTime.Now;
         if (player != null)
         {
             double newTime = PositionSlider.Value * player.Duration;
