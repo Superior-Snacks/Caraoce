@@ -48,6 +48,7 @@ public partial class MainPage : ContentPage
 #endif
     }
 
+
     private async Task StartKaraoke()
     {
         StatusLabel.Text = "Loading...";
@@ -124,6 +125,34 @@ public partial class MainPage : ContentPage
         }
     }
 
+    private async void PlayNextRandomSong()
+    {
+        // 1. Get the list of songs
+        var allSongs = await SongRepository.GetAllSongsAsync();
+
+        // 2. Pick a random one
+        if (allSongs.Count > 0)
+        {
+            var random = new Random();
+            var nextSong = allSongs[random.Next(allSongs.Count)];
+
+            // Optional: Ensure we don't play the exact same song twice in a row
+            if (allSongs.Count > 1 && nextSong.Title == currentSong.Title)
+            {
+                // Pick again if it's the same song
+                nextSong = allSongs[random.Next(allSongs.Count)];
+            }
+
+            // 3. Switch the data
+            currentSong = nextSong;
+
+            // 4. Clean up the old song
+            StopKaraoke();
+
+            // 5. Start the new one!
+            await StartKaraoke();
+        }
+    }
     // --- CONTROLS ---
 
     private void OnPlayPauseClicked(object sender, EventArgs e)
