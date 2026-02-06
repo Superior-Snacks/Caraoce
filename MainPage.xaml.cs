@@ -104,12 +104,18 @@ public partial class MainPage : ContentPage
         var audioStream = await FileSystem.OpenAppPackageFileAsync(currentSong.AudioFilename);
         player = AudioManager.Current.CreatePlayer(audioStream);
 
+        player.PlaybackEnded += (s, e) =>
+        {
+            // When song ends, run the next song logic on the main UI thread
+            Dispatcher.Dispatch(() => PlayNextRandomSong());
+        };
+
         // Set Total Time Label
         TotalTimeLabel.Text = TimeSpan.FromSeconds(player.Duration).ToString(@"m\:ss");
 
         player.Play();
         isPlaying = true;
-        StatusLabel.Text = currentSong.Title; // Show Title in the label
+        StatusLabel.Text = currentSong.Title;
 
         // Start the Loop
         _ = Dispatcher.DispatchAsync(UpdateLoop);
