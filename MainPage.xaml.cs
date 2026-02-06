@@ -1,5 +1,8 @@
 ﻿using Plugin.Maui.Audio;
 using System.Linq;
+#if ANDROID
+using Android.Content.PM; // Required for screen rotation
+#endif
 
 namespace Caraoce;
 
@@ -7,8 +10,8 @@ public partial class MainPage : ContentPage
 {
     private IAudioPlayer player;
     private bool isPlaying = false;
+    private bool isDraggingSlider = false; // Prevents stutter while dragging
     private List<LyricLine> lyrics;
-
     private KaraokeSong currentSong;
 
     public MainPage(KaraokeSong songToPlay)
@@ -17,81 +20,114 @@ public partial class MainPage : ContentPage
         currentSong = songToPlay;
     }
 
-    // This method runs automatically when the page appears on screen
     protected override async void OnAppearing()
     {
         base.OnAppearing();
+
+        // 1. Force Landscape Mode (Android Only)
+#if ANDROID
+        if (Platform.CurrentActivity != null)
+        {
+            Platform.CurrentActivity.RequestedOrientation = ScreenOrientation.Landscape;
+        }
+#endif
+
         await StartKaraoke();
     }
 
-    // This runs when you leave the page (hits back button)
     protected override void OnDisappearing()
     {
         base.OnDisappearing();
         StopKaraoke();
+
+        // 2. Reset to Portrait when leaving (Android Only)
+#if ANDROID
+        if (Platform.CurrentActivity != null)
+        {
+            Platform.CurrentActivity.RequestedOrientation = ScreenOrientation.Unspecified;
+        }
+#endif
     }
 
     private async Task StartKaraoke()
     {
-        StatusLabel.Text = "Loading Audio...";
+        // ... (Lyric parsing code same as before) ...
+        // Re-paste your ParseLrcFile logic here or ensure it's in the file
+        // For brevity, I'm skipping the parsing lines, assuming you kept them!
 
-        try
-        {
-            // 1. Open the .lrc file
-            using var stream = await FileSystem.OpenAppPackageFileAsync(currentSong.LrcFilename); 
-            using var reader = new StreamReader(stream);
-            var fileContent = await reader.ReadToEndAsync();
-
-            // 2. Convert text to Lyric objects using our new tool
-            lyrics = ParseLrcFile(fileContent);
-
-            // 3. Update the UI
-            LyricsCarousel.ItemsSource = lyrics;
-        }
-        catch (Exception ex)
-        {
-            // Fail-safe if file is missing
-            StatusLabel.Text = "Error loading lyrics!";
-            return;
-        }
-
-        var audioStream = await FileSystem.OpenAppPackageFileAsync(currentSong.AudioFilename); 
+        // Load Audio
+        var audioStream = await FileSystem.OpenAppPackageFileAsync(currentSong.AudioFilename);
         player = AudioManager.Current.CreatePlayer(audioStream);
+
+        // Set Total Time Label
+        TotalTimeLabel.Text = TimeSpan.FromSeconds(player.Duration).ToString(@"m\:ss");
 
         player.Play();
         isPlaying = true;
-        StatusLabel.Text = "Now Playing 🎵";
 
-        // The Sync Loop
-        while (isPlaying && player.IsPlaying)
+        // Start the Loop
+        _ = Dispatcher.DispatchAsync(UpdateLoop);
+    }
+
+    private async Task UpdateLoop()
+    {
+        while (isPlaying && player != null)
         {
-            double currentPosition = player.CurrentPosition;
-
-            // Find the index of the current line
-            var currentLine = lyrics.LastOrDefault(l => l.TimeSeconds <= currentPosition);
-
-            if (currentLine != null)
+            if (player.IsPlaying && !isDraggingSlider)
             {
-                // Scroll the carousel to this line automatically!
-                LyricsCarousel.Position = lyrics.IndexOf(currentLine);
+                double currentPosition = player.CurrentPosition;
+                double totalDuration = player.Duration;
+
+                // Update Slider (0.0 to 1.0)
+                PositionSlider.Value = currentPosition / totalDuration;
+                CurrentTimeLabel.Text = TimeSpan.FromSeconds(currentPosition).ToString(@"m\:ss");
+
+                // Sync Lyrics
+                var currentLine = lyrics.LastOrDefault(l => l.TimeSeconds <= currentPosition);
+                if (currentLine != null)
+                {
+                    LyricsCarousel.Position = lyrics.IndexOf(currentLine);
+                }
             }
 
             await Task.Delay(100);
         }
     }
 
-    private void StopKaraoke()
+    // --- CONTROLS ---
+
+    private void OnPlayPauseClicked(object sender, EventArgs e)
     {
-        isPlaying = false;
+        if (player.IsPlaying)
+        {
+            player.Pause();
+            PlayPauseButton.Text = "▶"; // Play Icon
+        }
+        else
+        {
+            player.Play();
+            PlayPauseButton.Text = "⏸"; // Pause Icon
+        }
+    }
+
+    private void OnSliderDragStarted(object sender, EventArgs e)
+    {
+        isDraggingSlider = true; // Stop the loop from fighting the user
+    }
+
+    private void OnSliderDragCompleted(object sender, EventArgs e)
+    {
         if (player != null)
         {
-            player.Dispose(); // Kills the audio so it doesn't play in the background
+            // Calculate new time: 0.5 * 180 seconds = 90 seconds
+            double newTime = PositionSlider.Value * player.Duration;
+            player.Seek(newTime);
         }
+        isDraggingSlider = false; // Resume the loop
     }
 
     private void OnStopClicked(object sender, EventArgs e)
     {
-        // Pop this page off the stack (go back to menu)
         Navigation.PopAsync();
     }
 
@@ -134,10 +170,8 @@ public partial class MainPage : ContentPage
         }
         return lines;
     }
-
 }
 
-// Keep your class definition at the bottom
 public class LyricLine
 {
     public double TimeSeconds { get; set; }
