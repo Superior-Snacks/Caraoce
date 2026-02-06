@@ -17,8 +17,8 @@ public partial class MainPage : ContentPage
     {
         InitializeComponent();
         currentSong = songToPlay;
-
-        private async void PlayNextRandomSong()
+    }
+    private async void PlayNextRandomSong()
     {
         // 1. Get the list of songs
         var allSongs = await SongRepository.GetAllSongsAsync();
@@ -45,7 +45,6 @@ public partial class MainPage : ContentPage
             // 5. Start the new one!
             await StartKaraoke();
         }
-    }
     }
 
     protected override async void OnAppearing()
