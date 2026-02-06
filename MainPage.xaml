@@ -17,6 +17,11 @@
             <CarouselView.ItemTemplate>
                 <DataTemplate>
                     <Grid Padding="10">
+
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnScreenTapped" />
+                        </Grid.GestureRecognizers>
+
                         <Label Text="{Binding Text}"
                                FontSize="80" 
                                FontAttributes="Bold"

@@ -185,13 +185,20 @@ public partial class MainPage : ContentPage
 
     private async void OnScreenTapped(object sender, EventArgs e)
     {
+        // Reset the timer immediately
         lastInteractionTime = DateTime.Now;
 
-        // If controls are hidden (Opacity is 0), fade them in!
-        if (ControlsPanel.Opacity == 0)
+        // If controls are invisible (or close to it), bring them back!
+        if (ControlsPanel.Opacity < 1.0)
         {
-            ControlsPanel.InputTransparent = false; // Enable buttons
-            await ControlsPanel.FadeTo(1, 250); // Smooth fade in (250ms)
+            // 1. Enable interaction immediately
+            ControlsPanel.InputTransparent = false;
+
+            // 2. Stop any existing fade-out animation to prevent fighting
+            ControlsPanel.CancelAnimations();
+
+            // 3. Fade in
+            await ControlsPanel.FadeTo(1, 250);
         }
     }
 
