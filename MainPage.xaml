@@ -13,7 +13,8 @@
 
         <CarouselView x:Name="LyricsCarousel"
                       IndicatorView="indicatorView"
-                      VerticalOptions="FillAndExpand">
+                      VerticalOptions="FillAndExpand"
+                      IsSwipeEnabled="False">
             <CarouselView.ItemTemplate>
                 <DataTemplate>
                     <Grid Padding="10">
