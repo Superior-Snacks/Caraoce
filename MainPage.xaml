@@ -3,8 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Caraoce.MainPage"
              BackgroundColor="#1a1a2e"
-             Title="Now Playing">
-
+             Title="Now Playing"
+             NavigationPage.HasNavigationBar="False">
     <Grid RowDefinitions="*, Auto" Padding="20">
 
         <CarouselView x:Name="LyricsCarousel"
@@ -15,33 +15,59 @@
                 <DataTemplate>
                     <Grid Padding="10">
                         <Label Text="{Binding Text}"
-                               FontSize="40"
+                               FontSize="60" 
                                FontAttributes="Bold"
                                TextColor="White"
                                HorizontalOptions="Center"
                                VerticalOptions="Center"
-                               HorizontalTextAlignment="Center" />
+                               HorizontalTextAlignment="Center" 
+                               LineBreakMode="WordWrap"/>
                     </Grid>
                 </DataTemplate>
             </CarouselView.ItemTemplate>
         </CarouselView>
 
-        <VerticalStackLayout Grid.Row="1" Spacing="20" Margin="0,0,0,30">
+        <VerticalStackLayout Grid.Row="1" Spacing="10" Margin="10,0,10,20">
+
+            <Grid ColumnDefinitions="Auto, *, Auto">
+                <Label x:Name="CurrentTimeLabel" Text="0:00" TextColor="Gray" VerticalOptions="Center"/>
+                <Slider x:Name="PositionSlider"
+                        Grid.Column="1"
+                        Minimum="0"
+                        Maximum="1"
+                        ThumbColor="#e94560"
+                        MinimumTrackColor="#e94560"
+                        MaximumTrackColor="Gray"
+                        Margin="10,0"
+                        DragCompleted="OnSliderDragCompleted"
+                        DragStarted="OnSliderDragStarted"/>
+                <Label x:Name="TotalTimeLabel" Text="0:00" TextColor="Gray" VerticalOptions="Center" Grid.Column="2"/>
+            </Grid>
+
+            <HorizontalStackLayout Spacing="30" HorizontalOptions="Center">
+
+                <ImageButton Source="back_icon.png" 
+                             HeightRequest="50" 
+                             WidthRequest="50"
+                             Clicked="OnStopClicked"
+                             BackgroundColor="Transparent"/>
+
+                <Button x:Name="PlayPauseButton"
+                        Text="⏸"
+                        FontSize="30"
+                        TextColor="White"
+                        BackgroundColor="#e94560"
+                        WidthRequest="80"
+                        HeightRequest="80"
+                        CornerRadius="40"
+                        Clicked="OnPlayPauseClicked"/>
+
+            </HorizontalStackLayout>
+
             <IndicatorView x:Name="indicatorView"
-                           IndicatorColor="Gray"
+                           IndicatorColor="#333"
                            SelectedIndicatorColor="#e94560"
                            HorizontalOptions="Center" />
-
-            <Label x:Name="StatusLabel" 
-                   Text="Loading..." 
-                   TextColor="Gray" 
-                   HorizontalOptions="Center"/>
-
-            <Button Text="STOP &amp; BACK"
-                    BackgroundColor="#e94560"
-                    TextColor="White"
-                    CornerRadius="20"
-                    Clicked="OnStopClicked"/>
         </VerticalStackLayout>
     </Grid>
 </ContentPage>
