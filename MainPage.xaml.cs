@@ -56,6 +56,7 @@ public partial class MainPage : ContentPage
         if (Platform.CurrentActivity != null)
         {
             Platform.CurrentActivity.RequestedOrientation = ScreenOrientation.Landscape;
+            Platform.CurrentActivity.Window.AddFlags(Android.Views.WindowManagerFlags.Fullscreen);
         }
 #endif
 
@@ -72,6 +73,7 @@ public partial class MainPage : ContentPage
         if (Platform.CurrentActivity != null)
         {
             Platform.CurrentActivity.RequestedOrientation = ScreenOrientation.Unspecified;
+            Platform.CurrentActivity.Window.ClearFlags(Android.Views.WindowManagerFlags.Fullscreen);
         }
 #endif
     }
