@@ -1,5 +1,4 @@
 ﻿using Plugin.Maui.Audio;
-using System.Linq;
 #if ANDROID
 using Android.Content.PM; // Required for screen rotation
 #endif
@@ -10,8 +9,8 @@ public partial class MainPage : ContentPage
 {
     private IAudioPlayer player;
     private bool isPlaying = false;
-    private bool isDraggingSlider = false; // Prevents stutter while dragging
-    private List<LyricLine> lyrics;
+    private bool isDraggingSlider = false;
+    private List<LyricLine> lyrics = new List<LyricLine>(); // Initialize to avoid null errors
     private KaraokeSong currentSong;
 
     public MainPage(KaraokeSong songToPlay)
@@ -38,7 +37,7 @@ public partial class MainPage : ContentPage
     protected override void OnDisappearing()
     {
         base.OnDisappearing();
-        StopKaraoke();
+        StopKaraoke(); // <--- This now exists!
 
         // 2. Reset to Portrait when leaving (Android Only)
 #if ANDROID
@@ -51,11 +50,28 @@ public partial class MainPage : ContentPage
 
     private async Task StartKaraoke()
     {
-        // ... (Lyric parsing code same as before) ...
-        // Re-paste your ParseLrcFile logic here or ensure it's in the file
-        // For brevity, I'm skipping the parsing lines, assuming you kept them!
+        StatusLabel.Text = "Loading...";
 
-        // Load Audio
+        // --- A. LOAD LYRICS ---
+        try
+        {
+            // Read the LRC file from the raw resources
+            using var lrcStream = await FileSystem.OpenAppPackageFileAsync(currentSong.LrcFilename);
+            using var reader = new StreamReader(lrcStream);
+            var fileContent = await reader.ReadToEndAsync();
+
+            // Parse them
+            lyrics = ParseLrcFile(fileContent);
+            LyricsCarousel.ItemsSource = lyrics;
+        }
+        catch
+        {
+            // Fallback if no .lrc file found
+            lyrics = new List<LyricLine> { new LyricLine(0, "No lyrics found for this song.") };
+            LyricsCarousel.ItemsSource = lyrics;
+        }
+
+        // --- B. LOAD AUDIO ---
         var audioStream = await FileSystem.OpenAppPackageFileAsync(currentSong.AudioFilename);
         player = AudioManager.Current.CreatePlayer(audioStream);
 
@@ -64,9 +80,20 @@ public partial class MainPage : ContentPage
 
         player.Play();
         isPlaying = true;
+        StatusLabel.Text = currentSong.Title; // Show Title in the label
 
         // Start the Loop
         _ = Dispatcher.DispatchAsync(UpdateLoop);
+    }
+
+    // --- C. THE MISSING METHOD ---
+    private void StopKaraoke()
+    {
+        isPlaying = false;
+        if (player != null)
+        {
+            player.Dispose(); // Cleans up the audio engine
+        }
     }
 
     private async Task UpdateLoop()
@@ -78,9 +105,12 @@ public partial class MainPage : ContentPage
                 double currentPosition = player.CurrentPosition;
                 double totalDuration = player.Duration;
 
-                // Update Slider (0.0 to 1.0)
-                PositionSlider.Value = currentPosition / totalDuration;
-                CurrentTimeLabel.Text = TimeSpan.FromSeconds(currentPosition).ToString(@"m\:ss");
+                // Update Slider (0.0 to 1.0) and Time Label
+                if (totalDuration > 0)
+                {
+                    PositionSlider.Value = currentPosition / totalDuration;
+                    CurrentTimeLabel.Text = TimeSpan.FromSeconds(currentPosition).ToString(@"m\:ss");
+                }
 
                 // Sync Lyrics
                 var currentLine = lyrics.LastOrDefault(l => l.TimeSeconds <= currentPosition);
@@ -112,18 +142,17 @@ public partial class MainPage : ContentPage
 
     private void OnSliderDragStarted(object sender, EventArgs e)
     {
-        isDraggingSlider = true; // Stop the loop from fighting the user
+        isDraggingSlider = true;
     }
 
     private void OnSliderDragCompleted(object sender, EventArgs e)
     {
         if (player != null)
         {
-            // Calculate new time: 0.5 * 180 seconds = 90 seconds
             double newTime = PositionSlider.Value * player.Duration;
             player.Seek(newTime);
         }
-        isDraggingSlider = false; // Resume the loop
+        isDraggingSlider = false;
     }
 
     private void OnStopClicked(object sender, EventArgs e)
@@ -131,55 +160,28 @@ public partial class MainPage : ContentPage
         Navigation.PopAsync();
     }
 
+    // --- PARSER ---
     private List<LyricLine> ParseLrcFile(string lrcContent)
     {
         var lines = new List<LyricLine>();
-
-        // Split the file into individual lines
         var fileLines = lrcContent.Split('\n');
 
         foreach (var line in fileLines)
         {
-            // specific format: [00:12.34] Lyrics here
             if (line.StartsWith("[") && line.Contains("]"))
             {
                 try
                 {
-                    // 1. Cut out the timestamp: "[00:12.34]" -> "00:12.34"
                     var timePart = line.Substring(1, line.IndexOf("]") - 1);
-
-                    // 2. Cut out the text: "Lyrics here"
                     var textPart = line.Substring(line.IndexOf("]") + 1).Trim();
-
-                    // 3. Convert time to seconds
-                    // Split "00:12.34" into minutes and seconds
                     var timeParts = timePart.Split(':');
                     double minutes = double.Parse(timeParts[0]);
                     double seconds = double.Parse(timeParts[1]);
-
-                    double totalSeconds = (minutes * 60) + seconds;
-
-                    lines.Add(new LyricLine(totalSeconds, textPart));
+                    lines.Add(new LyricLine((minutes * 60) + seconds, textPart));
                 }
-                catch
-                {
-                    // If a line is formatted weirdly, just skip it to prevent crashing
-                    continue;
-                }
+                catch { continue; }
             }
         }
         return lines;
-    }
-}
-
-public class LyricLine
-{
-    public double TimeSeconds { get; set; }
-    public string Text { get; set; }
-
-    public LyricLine(double time, string text)
-    {
-        TimeSeconds = time;
-        Text = text;
     }
 }
