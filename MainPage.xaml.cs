@@ -1,6 +1,7 @@
 ﻿using Plugin.Maui.Audio;
 #if ANDROID
 using Android.Content.PM; // Required for screen rotation
+using Android.Views;
 #endif
 
 namespace Caraoce;
