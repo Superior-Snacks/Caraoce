@@ -6,20 +6,19 @@
              Title="Now Playing"
              NavigationPage.HasNavigationBar="False">
 
-    <Grid RowDefinitions="*, Auto" Padding="20">
+    <Grid>
         <Grid.GestureRecognizers>
             <TapGestureRecognizer Tapped="OnScreenTapped" />
         </Grid.GestureRecognizers>
 
         <CarouselView x:Name="LyricsCarousel"
-                      Grid.Row="0"
                       IndicatorView="indicatorView"
-                      VerticalOptions="Center">
+                      VerticalOptions="FillAndExpand">
             <CarouselView.ItemTemplate>
                 <DataTemplate>
                     <Grid Padding="10">
                         <Label Text="{Binding Text}"
-                               FontSize="60" 
+                               FontSize="80" 
                                FontAttributes="Bold"
                                TextColor="White"
                                HorizontalOptions="Center"
@@ -32,11 +31,19 @@
         </CarouselView>
 
         <VerticalStackLayout x:Name="ControlsPanel"
-                             Grid.Row="1" 
                              Spacing="10" 
-                             Margin="10,0,10,20"
+                             VerticalOptions="End" 
                              Opacity="0"
-                             InputTransparent="True">
+                             InputTransparent="True"
+                             Padding="20,40,20,20">
+
+            <VerticalStackLayout.Background>
+                <LinearGradientBrush EndPoint="0,1">
+                    <GradientStop Color="Transparent" Offset="0.0" />
+                    <GradientStop Color="#cc1a1a2e" Offset="0.2" />
+                    <GradientStop Color="#1a1a2e" Offset="1.0" />
+                </LinearGradientBrush>
+            </VerticalStackLayout.Background>
 
             <Label x:Name="StatusLabel"
                    Text="Loading..."
