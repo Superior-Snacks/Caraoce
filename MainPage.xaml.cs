@@ -185,3 +185,15 @@ public partial class MainPage : ContentPage
         return lines;
     }
 }
+
+public class LyricLine
+{
+    public double TimeSeconds { get; set; }
+    public string Text { get; set; }
+
+    public LyricLine(double time, string text)
+    {
+        TimeSeconds = time;
+        Text = text;
+    }
+}
