@@ -125,13 +125,19 @@ public partial class MainPage : ContentPage
     private void StopKaraoke()
     {
         isPlaying = false;
+
         if (player != null)
         {
-            player.Dispose(); // Cleans up the audio engine
+            // Important: Remove the event listener so it doesn't fire twice
+            player.PlaybackEnded -= (s, e) => { };
+            player.Dispose();
         }
+        // Reset UI for the next song
+        PositionSlider.Value = 0;
+        CurrentTimeLabel.Text = "0:00";
     }
 
-    private async Task UpdateLoop()
+private async Task UpdateLoop()
     {
         while (isPlaying && player != null)
         {
