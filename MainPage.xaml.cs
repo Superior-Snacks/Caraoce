@@ -13,6 +13,7 @@ public partial class MainPage : ContentPage
     private bool isDraggingSlider = false;
     private List<LyricLine> lyrics = new List<LyricLine>(); // Initialize to avoid null errors
     private KaraokeSong currentSong;
+    private DateTime lastInteractionTime;
 
     public MainPage(KaraokeSong songToPlay)
     {
@@ -139,23 +140,35 @@ public partial class MainPage : ContentPage
         CurrentTimeLabel.Text = "0:00";
     }
 
-private async Task UpdateLoop()
+    private async Task UpdateLoop()
     {
         while (isPlaying && player != null)
         {
+            // --- NEW AUTO-HIDE LOGIC ---
+            // Check how much time passed since last touch
+            var timeSinceTouch = DateTime.Now - lastInteractionTime;
+
+            // If controls are visible AND it's been more than 2 seconds AND we aren't dragging the slider
+            if (ControlsPanel.Opacity == 1 && timeSinceTouch.TotalSeconds > 2 && !isDraggingSlider)
+            {
+                // Fade out
+                await ControlsPanel.FadeTo(0, 500);
+                ControlsPanel.InputTransparent = true; // Disable buttons so you don't click invisible things
+            }
+            // ---------------------------
+
             if (player.IsPlaying && !isDraggingSlider)
             {
+                // ... (Your existing slider/lyric update code stays here) ...
                 double currentPosition = player.CurrentPosition;
                 double totalDuration = player.Duration;
 
-                // Update Slider (0.0 to 1.0) and Time Label
                 if (totalDuration > 0)
                 {
                     PositionSlider.Value = currentPosition / totalDuration;
                     CurrentTimeLabel.Text = TimeSpan.FromSeconds(currentPosition).ToString(@"m\:ss");
                 }
 
-                // Sync Lyrics
                 var currentLine = lyrics.LastOrDefault(l => l.TimeSeconds <= currentPosition);
                 if (currentLine != null)
                 {
@@ -164,6 +177,18 @@ private async Task UpdateLoop()
             }
 
             await Task.Delay(100);
+        }
+    }
+
+    private async void OnScreenTapped(object sender, EventArgs e)
+    {
+        lastInteractionTime = DateTime.Now;
+
+        // If controls are hidden (Opacity is 0), fade them in!
+        if (ControlsPanel.Opacity == 0)
+        {
+            ControlsPanel.InputTransparent = false; // Enable buttons
+            await ControlsPanel.FadeTo(1, 250); // Smooth fade in (250ms)
         }
     }
 
