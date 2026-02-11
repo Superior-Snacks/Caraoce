@@ -7,15 +7,10 @@
     <Grid RowDefinitions="*,Auto,Auto,*" Padding="30">
 
         <VerticalStackLayout Grid.Row="0" VerticalOptions="Center">
-            <Label Text="KARAOKE" 
-                   TextColor="#e94560" 
+            <Label Text="CARAOKE" 
+                   TextColor="White"
                    FontSize="60" 
                    FontAttributes="Bold"
-                   HorizontalOptions="Center" />
-            <Label Text="STAR" 
-                   TextColor="White" 
-                   FontSize="40" 
-                   LetterSpacing="5"
                    HorizontalOptions="Center" />
         </VerticalStackLayout>
 
@@ -29,7 +24,7 @@
 
         <VerticalStackLayout Grid.Row="2" Spacing="20" Margin="0,20">
             <Button Text="🔀 SHUFFLE PLAY"
-                    BackgroundColor="#e94560"
+                    BackgroundColor="#16213e"
                     TextColor="White"
                     FontSize="20"
                     FontAttributes="Bold"

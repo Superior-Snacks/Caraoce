@@ -2,7 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Caraoce.MainPage"
-             BackgroundColor="#1a1a2e"
+             BackgroundColor="Black"
              Title="Now Playing"
              NavigationPage.HasNavigationBar="False">
 
@@ -84,17 +84,12 @@
                         Text="⏸"
                         FontSize="30"
                         TextColor="White"
-                        BackgroundColor="#e94560"
+                        BackgroundColor="Black"
                         WidthRequest="80"
                         HeightRequest="80"
                         CornerRadius="40"
                         Clicked="OnPlayPauseClicked"/>
             </HorizontalStackLayout>
-
-            <IndicatorView x:Name="indicatorView"
-                           IndicatorColor="#333"
-                           SelectedIndicatorColor="#e94560"
-                           HorizontalOptions="Center" />
         </VerticalStackLayout>
     </Grid>
 </ContentPage>

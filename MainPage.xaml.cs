@@ -53,12 +53,24 @@ public partial class MainPage : ContentPage
     {
         base.OnAppearing();
 
-        // 1. Force Landscape Mode (Android Only)
 #if ANDROID
-        if (Platform.CurrentActivity != null)
+        if (Platform.CurrentActivity?.Window != null)
         {
+            // 1. Force Landscape
             Platform.CurrentActivity.RequestedOrientation = ScreenOrientation.Landscape;
-            Platform.CurrentActivity.Window.AddFlags(Android.Views.WindowManagerFlags.Fullscreen);
+
+            // 2. Define the "Immersive Mode" flags
+            // This huge chunk tells Android: "Hide everything, and if the user swipes 
+            // to bring it back, hide it again automatically after a few seconds."
+            var uiOptions = (int)Android.Views.SystemUiFlags.LayoutStable |
+                            (int)Android.Views.SystemUiFlags.LayoutHideNavigation |
+                            (int)Android.Views.SystemUiFlags.LayoutFullscreen |
+                            (int)Android.Views.SystemUiFlags.HideNavigation | // Hides bottom bar
+                            (int)Android.Views.SystemUiFlags.Fullscreen |     // Hides top bar
+                            (int)Android.Views.SystemUiFlags.ImmersiveSticky; // Auto-hides after swipe
+
+            // 3. Apply the flags
+            Platform.CurrentActivity.Window.DecorView.SystemUiVisibility = (Android.Views.StatusBarVisibility)uiOptions;
         }
 #endif
 
@@ -68,14 +80,17 @@ public partial class MainPage : ContentPage
     protected override void OnDisappearing()
     {
         base.OnDisappearing();
-        StopKaraoke(); // <--- This now exists!
+        StopKaraoke();
 
-        // 2. Reset to Portrait when leaving (Android Only)
 #if ANDROID
-        if (Platform.CurrentActivity != null)
+        if (Platform.CurrentActivity?.Window != null)
         {
+            // 1. Reset Orientation to Portrait
             Platform.CurrentActivity.RequestedOrientation = ScreenOrientation.Unspecified;
-            Platform.CurrentActivity.Window.ClearFlags(Android.Views.WindowManagerFlags.Fullscreen);
+
+            // 2. Clear the flags (Bring bars back)
+            // Setting visibility to 'Visible' resets everything to default
+            Platform.CurrentActivity.Window.DecorView.SystemUiVisibility = Android.Views.StatusBarVisibility.Visible;
         }
 #endif
     }
