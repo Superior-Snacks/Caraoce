@@ -251,7 +251,7 @@ public partial class MainPage : ContentPage
     }
 
     // --- PARSER ---
-    private List<LyricLine> ParseLrcFile(string lrcContent)
+    private static List<LyricLine> ParseLrcFile(string lrcContent)
     {
         var lines = new List<LyricLine>();
         var fileLines = lrcContent.Split('\n');
