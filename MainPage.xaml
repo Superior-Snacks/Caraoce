@@ -2,15 +2,11 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Caraoce.MainPage"
-             BackgroundColor="Black"
+             BackgroundColor="#1a1a2e"
              Title="Now Playing"
              NavigationPage.HasNavigationBar="False">
 
     <Grid>
-        <Grid.GestureRecognizers>
-            <TapGestureRecognizer Tapped="OnScreenTapped" />
-        </Grid.GestureRecognizers>
-
         <CarouselView x:Name="LyricsCarousel"
                       IndicatorView="indicatorView"
                       VerticalOptions="FillAndExpand"
@@ -18,7 +14,6 @@
             <CarouselView.ItemTemplate>
                 <DataTemplate>
                     <Grid Padding="10">
-
                         <Grid.GestureRecognizers>
                             <TapGestureRecognizer Tapped="OnScreenTapped" />
                         </Grid.GestureRecognizers>
@@ -36,60 +31,88 @@
             </CarouselView.ItemTemplate>
         </CarouselView>
 
-        <VerticalStackLayout x:Name="ControlsPanel"
-                             Spacing="10" 
-                             VerticalOptions="End" 
-                             Opacity="0"
-                             InputTransparent="True"
-                             Padding="20,40,20,20">
+        <Grid x:Name="UiOverlay"
+              Opacity="0"
+              InputTransparent="True">
 
-            <VerticalStackLayout.Background>
-                <LinearGradientBrush EndPoint="0,1">
-                    <GradientStop Color="Transparent" Offset="0.0" />
-                    <GradientStop Color="#cc1a1a2e" Offset="0.2" />
-                    <GradientStop Color="#1a1a2e" Offset="1.0" />
-                </LinearGradientBrush>
-            </VerticalStackLayout.Background>
+            <Grid.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnScreenTapped" />
+            </Grid.GestureRecognizers>
 
             <Label x:Name="StatusLabel"
-                   Text="Loading..."
+                   Text="Song Title"
                    TextColor="White"
-                   FontSize="20"
+                   FontSize="24"
                    FontAttributes="Bold"
-                   HorizontalOptions="Center" />
+                   HorizontalOptions="Center"
+                   VerticalOptions="Start"
+                   Margin="0,40,0,0">
+                <Label.Shadow>
+                    <Shadow Brush="Black" Offset="2,2" Radius="5" Opacity="0.8"/>
+                </Label.Shadow>
+            </Label>
 
-            <Grid ColumnDefinitions="Auto, *, Auto">
-                <Label x:Name="CurrentTimeLabel" Text="0:00" TextColor="Gray" VerticalOptions="Center"/>
-                <Slider x:Name="PositionSlider"
-                        Grid.Column="1"
-                        Minimum="0"
-                        Maximum="1"
-                        ThumbColor="#e94560"
-                        MinimumTrackColor="#e94560"
-                        MaximumTrackColor="Gray"
-                        Margin="10,0"
-                        DragCompleted="OnSliderDragCompleted"
-                        DragStarted="OnSliderDragStarted"/>
-                <Label x:Name="TotalTimeLabel" Text="0:00" TextColor="Gray" VerticalOptions="Center" Grid.Column="2"/>
-            </Grid>
+            <VerticalStackLayout VerticalOptions="End" 
+                                 Spacing="15" 
+                                 Padding="20,0,20,30">
 
-            <HorizontalStackLayout Spacing="30" HorizontalOptions="Center">
-                <ImageButton Source="back_icon.png" 
-                             HeightRequest="50" 
-                             WidthRequest="50"
-                             Clicked="OnStopClicked"
-                             BackgroundColor="Transparent"/>
+                <VerticalStackLayout.Background>
+                    <LinearGradientBrush EndPoint="0,1">
+                        <GradientStop Color="Transparent" Offset="0.0" />
+                        <GradientStop Color="#cc1a1a2e" Offset="0.3" />
+                        <GradientStop Color="#1a1a2e" Offset="1.0" />
+                    </LinearGradientBrush>
+                </VerticalStackLayout.Background>
 
                 <Button x:Name="PlayPauseButton"
                         Text="⏸"
-                        FontSize="30"
+                        FontSize="40"
                         TextColor="White"
-                        BackgroundColor="Black"
-                        WidthRequest="80"
-                        HeightRequest="80"
-                        CornerRadius="40"
-                        Clicked="OnPlayPauseClicked"/>
-            </HorizontalStackLayout>
-        </VerticalStackLayout>
+                        BackgroundColor="#e94560"
+                        WidthRequest="90"
+                        HeightRequest="90"
+                        CornerRadius="45"
+                        HorizontalOptions="Center"
+                        Clicked="OnPlayPauseClicked">
+                    <Button.Shadow>
+                        <Shadow Brush="Black" Offset="0,4" Radius="8" Opacity="0.5"/>
+                    </Button.Shadow>
+                </Button>
+
+                <Grid ColumnDefinitions="Auto, *, Auto" Margin="0,10">
+                    <Label x:Name="CurrentTimeLabel" Text="0:00" TextColor="#ccc" VerticalOptions="Center"/>
+
+                    <Slider x:Name="PositionSlider"
+                            Grid.Column="1"
+                            Minimum="0"
+                            Maximum="1"
+                            ThumbColor="#e94560"
+                            MinimumTrackColor="#e94560"
+                            MaximumTrackColor="Gray"
+                            Margin="15,0"
+                            DragCompleted="OnSliderDragCompleted"
+                            DragStarted="OnSliderDragStarted"/>
+
+                    <Label x:Name="TotalTimeLabel" Text="0:00" TextColor="#ccc" VerticalOptions="Center" Grid.Column="2"/>
+                </Grid>
+
+                <Grid ColumnDefinitions="50, *, 50">
+                    <ImageButton Grid.Column="0"
+                                 Source="back_icon.png" 
+                                 HeightRequest="40" 
+                                 WidthRequest="40"
+                                 Clicked="OnStopClicked"
+                                 BackgroundColor="Transparent"
+                                 HorizontalOptions="Start"/>
+
+                    <IndicatorView Grid.Column="1"
+                                   x:Name="indicatorView"
+                                   IndicatorColor="#555"
+                                   SelectedIndicatorColor="#e94560"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center"/>
+                </Grid>
+            </VerticalStackLayout>
+        </Grid>
     </Grid>
 </ContentPage>

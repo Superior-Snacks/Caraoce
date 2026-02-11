@@ -99,8 +99,8 @@ public partial class MainPage : ContentPage
     {
         StatusLabel.Text = "Loading...";
         lastInteractionTime = DateTime.Now;
-        ControlsPanel.Opacity = 1;
-        ControlsPanel.InputTransparent = false;
+        UiOverlay.Opacity = 1;
+        UiOverlay.InputTransparent = false;
 
         // --- A. LOAD LYRICS ---
         try
@@ -167,11 +167,11 @@ public partial class MainPage : ContentPage
             var timeSinceTouch = DateTime.Now - lastInteractionTime;
 
             // If controls are visible AND it's been more than 2 seconds AND we aren't dragging the slider
-            if (ControlsPanel.Opacity == 1 && timeSinceTouch.TotalSeconds > 2 && !isDraggingSlider)
+            if (UiOverlay.Opacity == 1 && timeSinceTouch.TotalSeconds > 2 && !isDraggingSlider)
             {
                 // Fade out
-                await ControlsPanel.FadeTo(0, 500);
-                ControlsPanel.InputTransparent = true; // Disable buttons so you don't click invisible things
+                await UiOverlay.FadeTo(0, 500);
+                UiOverlay.InputTransparent = true; // Disable buttons so you don't click invisible things
             }
             // ---------------------------
 
@@ -200,20 +200,13 @@ public partial class MainPage : ContentPage
 
     private async void OnScreenTapped(object sender, EventArgs e)
     {
-        // Reset the timer immediately
         lastInteractionTime = DateTime.Now;
 
-        // If controls are invisible (or close to it), bring them back!
-        if (ControlsPanel.Opacity < 1.0)
+        if (UiOverlay.Opacity < 1.0)
         {
-            // 1. Enable interaction immediately
-            ControlsPanel.InputTransparent = false;
-
-            // 2. Stop any existing fade-out animation to prevent fighting
-            ControlsPanel.CancelAnimations();
-
-            // 3. Fade in
-            await ControlsPanel.FadeTo(1, 250);
+            UiOverlay.InputTransparent = false;
+            UiOverlay.CancelAnimations();
+            await UiOverlay.FadeTo(1, 250);
         }
     }
 
